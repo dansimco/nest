@@ -1,21 +1,21 @@
 --- dsco crow ---
 
-function t()
-	print("tick")
+txi_1 = 0
+txi_2 = 0
+txi_3 = 0
+txi_4 = 0
+
+function t(state)
+
 end
 
 function v2n(v)
 	-- return a note number based on volt
 end
 
-function qt(v,s,o)
-	-- return quantized voltage with offset
-end
-
 function er(k,n,s)
-	-- ER function adapted from  https://gist.github.com/vrld/b1e6f4cce7a8d15e00e4
-	-- k > Euclidean Fill
-	-- n > Euclidean Length
+	-- k > Fill
+	-- n > Length
 	-- s > current step (0-indexed)
 	local r = {}
 	for i = 1,n do
@@ -41,6 +41,32 @@ function er(k,n,s)
 	return r[1][s+1]
 end
 
+function init ()
+	input[1].mode('change',1.0,0.1,'rising')
+	input[1].change = t
 
-input[1].change = function(state) t() end
+	-- Input read metro
+	metro[1].event = function(c) 
+		ii.ansible.trigger(1,1)
+		ii.txi.get( 'param', 1)
+		ii.txi.get("in", 1)
+	end
+	metro[1].time  = 1.0
+	metro[1]:start()
+
+
+	ii.txi.event = function (e, data, id)
+		print("return")
+		if e == 'param' then
+			print(e, id)
+		end
+	end
+
+
+end
+
+
+
+
+
 
